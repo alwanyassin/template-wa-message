@@ -42,7 +42,7 @@ export default function TemplateAccess2G({ data, onChange }) {
           type="text"
           value={data.mediaName}
           onChange={(e) => onChange({ ...data, mediaName: e.target.value })}
-          placeholder="Contoh: InspiratifOnline.com"
+          placeholder="Contoh: PortalMediaContoh.com"
           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-slate-800 font-medium transition text-sm"
         />
       </div>
@@ -94,7 +94,7 @@ export default function TemplateAccess2G({ data, onChange }) {
             type="email"
             value={data.email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            placeholder="contoh: inspiratif28@gmail.com"
+            placeholder="contoh: akunmitra.dummy@gmail.com"
             className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-slate-800 text-xs transition"
           />
         </div>
@@ -154,7 +154,7 @@ export default function TemplateAccess2G({ data, onChange }) {
             type={showPassword ? 'text' : 'password'}
             value={data.traktirKopiPassword}
             onChange={(e) => onChange({ ...data, traktirKopiPassword: e.target.value })}
-            placeholder="Contoh: 72j0qAlv"
+            placeholder="Contoh: PasswordKopi123!"
             className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-slate-800 font-mono text-xs tracking-wider transition"
           />
         </div>

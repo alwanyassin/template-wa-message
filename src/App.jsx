@@ -5,25 +5,25 @@ import WhatsAppPreview from './components/WhatsAppPreview';
 import { Newspaper, BarChart2, Sparkles, CheckCircle2, SlidersHorizontal, Info } from 'lucide-react';
 
 const initialPromediaData = {
-  mediaName: 'News7Room.com',
+  mediaName: 'PortalMediaContoh.com',
   emails: [
-    'Hendrasony805@gmail.com',
-    'randizulfahli@gmail.com',
-    'avarelzyhafizhefison@gmail.com',
+    'penulis1.dummy@gmail.com',
+    'penulis2.dummy@gmail.com',
+    'redaksi.dummy@gmail.com',
   ],
-  password: 'n7r915',
-  cmsLink: 'https://editor2.promediaindonesia.com',
+  password: 'PasswordDummy123!',
+  cmsLink: 'https://editor1.promediaindonesia.com',
 };
 
 const initialAccess2GData = {
-  mediaName: 'InspiratifOnline.com',
+  mediaName: 'PortalMediaContoh.com',
   ga4Link:
-    'https://analytics.google.com/analytics/web/#/a282380707p554531618/realtime/overview?params=_u..nav%3Dmaui',
+    'https://analytics.google.com/analytics/web/#/p000000000/reports/dashboard',
   gdsLink:
-    'https://datastudio.google.com/reporting/e09f3c88-3953-48fb-b6d7-494bdb2ba3ff',
-  email: 'inspiratif28@gmail.com',
-  traktirKopiUsername: 'inspiratif28@gmail.com',
-  traktirKopiPassword: '72j0qAlv',
+    'https://lookerstudio.google.com/reporting/00000000-0000-0000-0000-000000000000',
+  email: 'akunmitra.dummy@gmail.com',
+  traktirKopiUsername: 'akunmitra.dummy@gmail.com',
+  traktirKopiPassword: 'PasswordKopi123!',
   traktirKopiLink: 'https://traktir-kopi.promediateknologi.id/',
 };
 
@@ -74,7 +74,7 @@ ${emailListFormatted}
 *Link CMS Editor:*
 ${cmsLink}
 
-_Silakan login menggunakan kredensial di atas dan simpan dengan aman. Terima kasih._`;
+_Silakan login menggunakan kredensial di atas, lakukan verifikasi email dan ganti password, lalu simpan dengan aman. Terima kasih._`;
   };
 
   // Generate Message for Template 2
