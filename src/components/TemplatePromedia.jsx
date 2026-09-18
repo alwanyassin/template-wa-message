@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Globe, Lock, Mail, KeyRound, Sparkles, ExternalLink, Building2, BookmarkPlus } from 'lucide-react';
+import { Plus, Trash2, Globe, Lock, Mail, KeyRound, Sparkles, ExternalLink, Building2, BookmarkPlus, Dices } from 'lucide-react';
+import { generateRandomPassword } from '../utils/password';
 
 export default function TemplatePromedia({
   data,
@@ -159,13 +160,28 @@ export default function TemplatePromedia({
             <KeyRound className="w-4 h-4 text-emerald-600" />
             Password CMS Editor
           </span>
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-emerald-600 hover:underline font-normal"
-          >
-            {showPassword ? 'Sembunyikan' : 'Tampilkan'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const newPass = generateRandomPassword(8);
+                onChange({ ...data, password: newPass });
+                setShowPassword(true);
+              }}
+              className="text-xs text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-lg font-medium transition flex items-center gap-1 cursor-pointer"
+              title="Generate password acak baru"
+            >
+              <Dices className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Acak Password</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-xs text-slate-500 hover:text-slate-700 font-normal cursor-pointer"
+            >
+              {showPassword ? 'Sembunyikan' : 'Tampilkan'}
+            </button>
+          </div>
         </label>
         <input
           type={showPassword ? 'text' : 'password'}

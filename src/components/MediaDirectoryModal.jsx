@@ -17,8 +17,10 @@ import {
   Sparkles,
   ChevronDown,
   ChevronUp,
+  Dices,
 } from 'lucide-react';
 import { fetchMediaDirectory, saveMediaProfile, deleteMediaProfile } from '../services/api';
+import { generateRandomPassword } from '../utils/password';
 
 export default function MediaDirectoryModal({
   isOpen,
@@ -261,9 +263,20 @@ export default function MediaDirectoryModal({
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Password CMS Editor
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-semibold text-slate-700">
+                      Password CMS Editor
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, cms_password: generateRandomPassword(8) })}
+                      className="text-[11px] text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded font-medium flex items-center gap-1 transition cursor-pointer"
+                      title="Generate password CMS acak"
+                    >
+                      <Dices className="w-3 h-3 text-emerald-600" />
+                      <span>Acak</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="Contoh: Pass123!"
@@ -339,9 +352,20 @@ export default function MediaDirectoryModal({
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Password Traktir Kopi
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-semibold text-slate-700">
+                      Password Traktir Kopi
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, traktir_kopi_password: generateRandomPassword(8) })}
+                      className="text-[11px] text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded font-medium flex items-center gap-1 transition cursor-pointer"
+                      title="Generate password Traktir Kopi acak"
+                    >
+                      <Dices className="w-3 h-3 text-emerald-600" />
+                      <span>Acak</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="Password Kopi"
