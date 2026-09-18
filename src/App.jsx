@@ -178,16 +178,6 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-slate-500 hidden sm:inline">
-              Host di:
-            </span>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-orange-50 text-orange-700 border border-orange-200/80 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-              Cloudflare Pages Ready
-            </span>
-          </div>
         </div>
       </header>
 
@@ -315,7 +305,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
 
       {/* Footer */}
       <footer className="mt-auto py-6 border-t border-slate-200 bg-white/50 text-center text-xs text-slate-400">
-        <p>WhatsApp Message Generator • Siap dideploy ke Cloudflare Pages</p>
+        <p>WhatsApp Message Generator</p>
       </footer>
     </div>
   );

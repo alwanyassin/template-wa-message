@@ -2,7 +2,7 @@
 
 Aplikasi web modern dan responsif untuk meng-generate pesan WhatsApp secara otomatis dan rapi berdasarkan template yang sering digunakan (Akses CMS Editor Promedia dan Google Tools 2G + Dashboard Traktir Kopi).
 
-Aplikasi ini 100% *client-side*, sangat cepat, dan dioptimasi khusus untuk di-hosting secara **gratis di Cloudflare Pages**.
+Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
 
 ---
 
@@ -56,37 +56,15 @@ Buka browser di `http://localhost:5173`.
 
 ---
 
-## 🚀 Panduan Hosting Gratis di Cloudflare Pages
+## 🚀 Panduan Build & Production
 
-Cloudflare Pages menyediakan hosting gratis dengan unlimited bandwidth dan SSL otomatis. Ada 2 cara mudah:
+Untuk membuat bundle production:
 
-### Cara 1: Menghubungkan Repository GitHub (Rekomendasi - Otomatis Update)
+```bash
+npm run build
+```
 
-1. Push folder project ini ke repository GitHub Anda (`template-wa-message`).
-2. Masuk ke dashboard [Cloudflare](https://dash.cloudflare.com/) lalu pilih **Compute (Workers & Pages)** > **Create application** > tab **Pages** > **Connect to Git**.
-3. Pilih repository GitHub `template-wa-message`.
-4. Di bagian **Build settings**:
-   - **Framework preset**: `Vite` (atau `None`)
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-5. *(Opsional)* Di bagian **Environment variables**, tambahkan:
-   - Variable name: `NODE_VERSION`
-   - Value: `22`
-6. Klik **Save and Deploy**.
-7. Selesai! Web Anda akan aktif di domain gratis seperti `template-wa-message.pages.dev`.
-
----
-
-### Cara 2: Direct Upload (Drag & Drop tanpa Git)
-
-1. Di komputer Anda, jalankan perintah build:
-   ```bash
-   npm run build
-   ```
-2. Folder bernama `dist` akan tercipta di dalam project.
-3. Buka dashboard Cloudflare Pages, pilih **Upload assets**.
-4. Beri nama proyek, lalu *drag and drop* folder `dist` tersebut ke halaman Cloudflare.
-5. Klik **Deploy site**. Selesai dalam hitungan detik!
+Folder `dist` yang dihasilkan berisi aset statis dan siap di-hosting di berbagai web hosting atau server statis (seperti GitHub Pages, Vercel, Netlify, Nginx, dsb).
 
 ---
 
@@ -95,4 +73,3 @@ Cloudflare Pages menyediakan hosting gratis dengan unlimited bandwidth dan SSL o
 - **Bundler**: Vite
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
-- **Target Hosting**: Cloudflare Pages (Free Tier)
