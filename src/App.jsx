@@ -65,6 +65,7 @@ export default function App() {
   const [isDirModalOpen, setIsDirModalOpen] = useState(false);
   const [isHistModalOpen, setIsHistModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const [currentMediaId, setCurrentMediaId] = useState(null);
 
   // Auto-save form drafts to localStorage
   useEffect(() => {
@@ -211,50 +212,62 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
       setAccess2gData(initialAccess2GData);
       removeDraft('access2g');
     }
+    setCurrentMediaId(null);
     showToast('Form berhasil di-reset ke data default');
   };
 
-  // Apply media profile from directory to form
+  // Apply media profile from directory to form (mengisi data ke kedua template sekaligus)
   const handleApplyMedia = (media) => {
-    if (activeTab === 'promedia') {
-      setPromediaData((prev) => ({
-        ...prev,
-        mediaName: media.media_name || prev.mediaName,
-        emails:
-          Array.isArray(media.cms_emails) && media.cms_emails.length > 0
-            ? media.cms_emails
-            : prev.emails,
-        password: media.cms_password || prev.password,
-        cmsLink: media.cms_link || prev.cmsLink,
-      }));
-    } else {
-      setAccess2gData((prev) => ({
-        ...prev,
-        mediaName: media.media_name || prev.mediaName,
-        ga4Link: media.ga4_link || prev.ga4Link,
-        gdsLink: media.gds_link || prev.gdsLink,
-        email: media.google_email || prev.email,
-        traktirKopiUsername:
-          media.traktir_kopi_username || media.google_email || prev.traktirKopiUsername,
-        traktirKopiPassword: media.traktir_kopi_password || prev.traktirKopiPassword,
-        traktirKopiLink: media.traktir_kopi_link || prev.traktirKopiLink,
-      }));
-    }
-    showToast(`Profil "${media.media_name}" berhasil diterapkan ke form!`);
+    setCurrentMediaId(media.id);
+
+    // Terapkan ke template Promedia
+    setPromediaData((prev) => ({
+      ...prev,
+      mediaName: media.media_name || prev.mediaName,
+      emails:
+        Array.isArray(media.cms_emails) && media.cms_emails.length > 0
+          ? media.cms_emails
+          : prev.emails,
+      password: media.cms_password || prev.password,
+      cmsLink: media.cms_link || prev.cmsLink,
+    }));
+
+    // Terapkan ke template Access 2G & Traktir Kopi
+    setAccess2gData((prev) => ({
+      ...prev,
+      mediaName: media.media_name || prev.mediaName,
+      ga4Link: media.ga4_link || prev.ga4Link,
+      gdsLink: media.gds_link || prev.gdsLink,
+      email: media.google_email || prev.email,
+      traktirKopiUsername:
+        media.traktir_kopi_username || media.google_email || prev.traktirKopiUsername,
+      traktirKopiPassword: media.traktir_kopi_password || prev.traktirKopiPassword,
+      traktirKopiLink: media.traktir_kopi_link || prev.traktirKopiLink,
+    }));
+
+    showToast(`Profil "${media.media_name}" berhasil dimuat ke kedua template!`);
   };
 
-  // Quick save current form data to directory
+  // Quick save current form data to directory (otomatis merge data nama sama)
   const handleQuickSaveToDirectory = async () => {
     const isPromedia = activeTab === 'promedia';
-    const mediaName = isPromedia ? promediaData.mediaName : access2gData.mediaName;
+    const mediaName = (isPromedia ? promediaData.mediaName : access2gData.mediaName).trim();
 
-    if (!mediaName || !mediaName.trim()) {
+    if (!mediaName) {
       alert('Nama media tidak boleh kosong');
       return;
     }
 
+    // Selaraskan nama media di kedua form
+    if (isPromedia) {
+      setAccess2gData((prev) => ({ ...prev, mediaName }));
+    } else {
+      setPromediaData((prev) => ({ ...prev, mediaName }));
+    }
+
     const payload = {
-      media_name: mediaName.trim(),
+      id: currentMediaId || undefined,
+      media_name: mediaName,
       ...(isPromedia
         ? {
             cms_emails: promediaData.emails,
@@ -271,8 +284,16 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
           }),
     };
 
-    await saveMediaProfile(payload);
-    showToast(`"${mediaName}" berhasil disimpan ke direktori!`);
+    const res = await saveMediaProfile(payload);
+    if (res.id) {
+      setCurrentMediaId(res.id);
+    }
+
+    showToast(
+      res.merged
+        ? `Profil "${mediaName}" berhasil disatukan & diperbarui di database!`
+        : `"${mediaName}" berhasil disimpan ke direktori!`
+    );
   };
 
   // Callback when message is copied or opened in WhatsApp

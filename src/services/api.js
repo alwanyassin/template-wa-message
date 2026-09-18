@@ -23,9 +23,43 @@ export async function fetchMediaDirectory() {
     return { data, isCloud: true };
   } catch (err) {
     console.warn('[D1 Service] Menggunakan fallback localStorage untuk media directory:', err.message);
-    const local = localStorage.getItem(LOCAL_MEDIA_KEY);
+    let list = [];
+    try {
+      const local = localStorage.getItem(LOCAL_MEDIA_KEY);
+      list = local ? JSON.parse(local) : [];
+    } catch (e) {
+      list = [];
+    }
+
+    // Deduplikasi local cache jika ada nama kembar
+    const uniqueMap = new Map();
+    for (const item of list) {
+      const key = (item.media_name || '').trim().toLowerCase();
+      if (!key) continue;
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, item);
+      } else {
+        const prev = uniqueMap.get(key);
+        uniqueMap.set(key, {
+          ...prev,
+          ...item,
+          id: prev.id,
+          cms_emails: Array.isArray(item.cms_emails) && item.cms_emails.length > 0 ? item.cms_emails : prev.cms_emails,
+          cms_password: item.cms_password || prev.cms_password || '',
+          cms_link: item.cms_link || prev.cms_link || '',
+          ga4_link: item.ga4_link || prev.ga4_link || '',
+          gds_link: item.gds_link || prev.gds_link || '',
+          google_email: item.google_email || prev.google_email || '',
+          traktir_kopi_username: item.traktir_kopi_username || prev.traktir_kopi_username || '',
+          traktir_kopi_password: item.traktir_kopi_password || prev.traktir_kopi_password || '',
+          traktir_kopi_link: item.traktir_kopi_link || prev.traktir_kopi_link || '',
+        });
+      }
+    }
+    const deduplicated = Array.from(uniqueMap.values());
+
     return {
-      data: local ? JSON.parse(local) : [],
+      data: deduplicated,
       isCloud: false,
       error: err.message,
     };
@@ -33,23 +67,64 @@ export async function fetchMediaDirectory() {
 }
 
 export async function saveMediaProfile(profile) {
-  const profileWithId = {
-    ...profile,
-    id: profile.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `media_${Date.now()}`),
-    updated_at: Date.now(),
-  };
+  const cleanMediaName = (profile.media_name || '').trim();
+  const now = Date.now();
 
-  // Update local cache terlebih dahulu agar instan
+  let localList = [];
   try {
     const local = localStorage.getItem(LOCAL_MEDIA_KEY);
-    const list = local ? JSON.parse(local) : [];
-    const index = list.findIndex((m) => m.id === profileWithId.id);
-    if (index >= 0) {
-      list[index] = profileWithId;
-    } else {
-      list.unshift(profileWithId);
-    }
-    localStorage.setItem(LOCAL_MEDIA_KEY, JSON.stringify(list));
+    localList = local ? JSON.parse(local) : [];
+  } catch (e) {
+    localList = [];
+  }
+
+  // Cek apakah media dengan ID sama ATAU Nama Media sama (case-insensitive) sudah ada
+  const existingIndex = localList.findIndex((m) => {
+    if (profile.id && m.id === profile.id) return true;
+    if (cleanMediaName && (m.media_name || '').trim().toLowerCase() === cleanMediaName.toLowerCase()) return true;
+    return false;
+  });
+
+  const existing = existingIndex >= 0 ? localList[existingIndex] : null;
+  const finalId = existing ? existing.id : (profile.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `media_${now}`));
+
+  // Merge CMS emails
+  let mergedEmails = existing ? (Array.isArray(existing.cms_emails) ? existing.cms_emails : []) : [];
+  if (Array.isArray(profile.cms_emails) && profile.cms_emails.length > 0) {
+    mergedEmails = profile.cms_emails;
+  }
+
+  const mergedProfile = {
+    ...existing,
+    ...profile,
+    id: finalId,
+    media_name: cleanMediaName,
+    cms_emails: mergedEmails,
+    cms_password: profile.cms_password || (existing ? existing.cms_password : '') || '',
+    cms_link: profile.cms_link || (existing ? existing.cms_link : '') || '',
+    ga4_link: profile.ga4_link || (existing ? existing.ga4_link : '') || '',
+    gds_link: profile.gds_link || (existing ? existing.gds_link : '') || '',
+    google_email: profile.google_email || (existing ? existing.google_email : '') || '',
+    traktir_kopi_username: profile.traktir_kopi_username || (existing ? existing.traktir_kopi_username : '') || '',
+    traktir_kopi_password: profile.traktir_kopi_password || (existing ? existing.traktir_kopi_password : '') || '',
+    traktir_kopi_link: profile.traktir_kopi_link || (existing ? existing.traktir_kopi_link : '') || '',
+    pic_name: profile.pic_name || (existing ? existing.pic_name : '') || '',
+    pic_phone: profile.pic_phone || (existing ? existing.pic_phone : '') || '',
+    notes: profile.notes || (existing ? existing.notes : '') || '',
+    created_at: existing ? existing.created_at : now,
+    updated_at: now,
+  };
+
+  // Hapus semua duplikat dengan ID atau nama sama, lalu masukkan profil yang sudah disatukan
+  localList = localList.filter((m) => {
+    if (m.id === finalId) return false;
+    if (cleanMediaName && (m.media_name || '').trim().toLowerCase() === cleanMediaName.toLowerCase()) return false;
+    return true;
+  });
+  localList.unshift(mergedProfile);
+
+  try {
+    localStorage.setItem(LOCAL_MEDIA_KEY, JSON.stringify(localList));
   } catch (e) {
     console.error('Error updating local cache:', e);
   }
@@ -59,13 +134,13 @@ export async function saveMediaProfile(profile) {
     const res = await fetch('/api/media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profileWithId),
+      body: JSON.stringify(mergedProfile),
     });
     const result = await handleResponse(res);
-    return { success: true, id: result.id || profileWithId.id, isCloud: true };
+    return { success: true, id: result.id || finalId, isCloud: true, merged: result.merged || !!existing };
   } catch (err) {
     console.warn('[D1 Service] Tersimpan di local cache (D1 fallback):', err.message);
-    return { success: true, id: profileWithId.id, isCloud: false };
+    return { success: true, id: finalId, isCloud: false, merged: !!existing };
   }
 }
 
