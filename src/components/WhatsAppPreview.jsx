@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Copy, Check, Send, Phone, MessageSquare, CheckCheck, RefreshCw } from 'lucide-react';
 
-export default function WhatsAppPreview({ messageText, onResetForm }) {
+export default function WhatsAppPreview({ messageText, onResetForm, onActionLogged }) {
   const [copied, setCopied] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showPhoneInput, setShowPhoneInput] = useState(false);
@@ -10,6 +10,9 @@ export default function WhatsAppPreview({ messageText, onResetForm }) {
     try {
       await navigator.clipboard.writeText(messageText);
       setCopied(true);
+      if (onActionLogged) {
+        onActionLogged('copy', phoneNumber);
+      }
       setTimeout(() => setCopied(false), 2500);
     } catch (err) {
       console.error('Failed to copy: ', err);
@@ -31,6 +34,11 @@ export default function WhatsAppPreview({ messageText, onResetForm }) {
     } else {
       url = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
     }
+
+    if (onActionLogged) {
+      onActionLogged('send_wa', cleanPhone || phoneNumber);
+    }
+
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

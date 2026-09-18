@@ -1,8 +1,27 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import TemplatePromedia from './components/TemplatePromedia';
 import TemplateAccess2G from './components/TemplateAccess2G';
 import WhatsAppPreview from './components/WhatsAppPreview';
-import { Newspaper, BarChart2, Sparkles, CheckCircle2, SlidersHorizontal, Info } from 'lucide-react';
+import MediaDirectoryModal from './components/MediaDirectoryModal';
+import HistoryModal from './components/HistoryModal';
+import {
+  Newspaper,
+  BarChart2,
+  Sparkles,
+  CheckCircle2,
+  SlidersHorizontal,
+  Info,
+  Building2,
+  Clock,
+  Check,
+} from 'lucide-react';
+import {
+  getSavedDraft,
+  saveDraft,
+  removeDraft,
+  logHistoryEntry,
+  saveMediaProfile,
+} from './services/api';
 
 const initialPromediaData = {
   mediaName: 'PortalMediaContoh.com',
@@ -28,11 +47,46 @@ const initialAccess2GData = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('promedia'); // 'promedia' | 'access2g'
-  const [formatMode, setFormatMode] = useState('professional'); // 'professional' | 'standard'
+  const [activeTab, setActiveTab] = useState(() =>
+    getSavedDraft('active_tab', 'promedia')
+  ); // 'promedia' | 'access2g'
+  const [formatMode, setFormatMode] = useState(() =>
+    getSavedDraft('format_mode', 'professional')
+  ); // 'professional' | 'standard'
 
-  const [promediaData, setPromediaData] = useState(initialPromediaData);
-  const [access2gData, setAccess2gData] = useState(initialAccess2GData);
+  const [promediaData, setPromediaData] = useState(() =>
+    getSavedDraft('promedia', initialPromediaData)
+  );
+  const [access2gData, setAccess2gData] = useState(() =>
+    getSavedDraft('access2g', initialAccess2GData)
+  );
+
+  // Modal states
+  const [isDirModalOpen, setIsDirModalOpen] = useState(false);
+  const [isHistModalOpen, setIsHistModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  // Auto-save form drafts to localStorage
+  useEffect(() => {
+    saveDraft('promedia', promediaData);
+  }, [promediaData]);
+
+  useEffect(() => {
+    saveDraft('access2g', access2gData);
+  }, [access2gData]);
+
+  useEffect(() => {
+    saveDraft('active_tab', activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    saveDraft('format_mode', formatMode);
+  }, [formatMode]);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   // Generate Message for Template 1
   const generatePromediaMessage = (data, mode) => {
@@ -152,13 +206,99 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
   const handleResetCurrentForm = () => {
     if (activeTab === 'promedia') {
       setPromediaData(initialPromediaData);
+      removeDraft('promedia');
     } else {
       setAccess2gData(initialAccess2GData);
+      removeDraft('access2g');
     }
+    showToast('Form berhasil di-reset ke data default');
+  };
+
+  // Apply media profile from directory to form
+  const handleApplyMedia = (media) => {
+    if (activeTab === 'promedia') {
+      setPromediaData((prev) => ({
+        ...prev,
+        mediaName: media.media_name || prev.mediaName,
+        emails:
+          Array.isArray(media.cms_emails) && media.cms_emails.length > 0
+            ? media.cms_emails
+            : prev.emails,
+        password: media.cms_password || prev.password,
+        cmsLink: media.cms_link || prev.cmsLink,
+      }));
+    } else {
+      setAccess2gData((prev) => ({
+        ...prev,
+        mediaName: media.media_name || prev.mediaName,
+        ga4Link: media.ga4_link || prev.ga4Link,
+        gdsLink: media.gds_link || prev.gdsLink,
+        email: media.google_email || prev.email,
+        traktirKopiUsername:
+          media.traktir_kopi_username || media.google_email || prev.traktirKopiUsername,
+        traktirKopiPassword: media.traktir_kopi_password || prev.traktirKopiPassword,
+        traktirKopiLink: media.traktir_kopi_link || prev.traktirKopiLink,
+      }));
+    }
+    showToast(`Profil "${media.media_name}" berhasil diterapkan ke form!`);
+  };
+
+  // Quick save current form data to directory
+  const handleQuickSaveToDirectory = async () => {
+    const isPromedia = activeTab === 'promedia';
+    const mediaName = isPromedia ? promediaData.mediaName : access2gData.mediaName;
+
+    if (!mediaName || !mediaName.trim()) {
+      alert('Nama media tidak boleh kosong');
+      return;
+    }
+
+    const payload = {
+      media_name: mediaName.trim(),
+      ...(isPromedia
+        ? {
+            cms_emails: promediaData.emails,
+            cms_password: promediaData.password,
+            cms_link: promediaData.cmsLink,
+          }
+        : {
+            ga4_link: access2gData.ga4Link,
+            gds_link: access2gData.gdsLink,
+            google_email: access2gData.email,
+            traktir_kopi_username: access2gData.traktirKopiUsername,
+            traktir_kopi_password: access2gData.traktirKopiPassword,
+            traktir_kopi_link: access2gData.traktirKopiLink,
+          }),
+    };
+
+    await saveMediaProfile(payload);
+    showToast(`"${mediaName}" berhasil disimpan ke direktori!`);
+  };
+
+  // Callback when message is copied or opened in WhatsApp
+  const handleActionLogged = async (actionType, phoneNumber) => {
+    const mediaName =
+      activeTab === 'promedia' ? promediaData.mediaName : access2gData.mediaName;
+
+    await logHistoryEntry({
+      template_type: activeTab,
+      media_name: mediaName || 'Media',
+      message_text: currentMessage,
+      action: actionType,
+      phone_number: phoneNumber,
+    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 text-slate-800 flex flex-col">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs animate-in slide-in-from-bottom duration-200">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Top Navbar */}
       <header className="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-xs backdrop-blur-md bg-white/90">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
@@ -177,6 +317,29 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                 Generator Pesan Akses CMS & Google Tools
               </p>
             </div>
+          </div>
+
+          {/* Database Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsDirModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer"
+              title="Kelola data direktori media bersama"
+            >
+              <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Direktori Media</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsHistModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer"
+              title="Lihat riwayat pesan yang telah disalin atau dikirim"
+            >
+              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              <span>Riwayat</span>
+            </button>
           </div>
         </div>
       </header>
@@ -222,7 +385,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
               <button
                 type="button"
                 onClick={() => setFormatMode('professional')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                   formatMode === 'professional'
                     ? 'bg-emerald-700 text-white shadow-xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -236,7 +399,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
               <button
                 type="button"
                 onClick={() => setFormatMode('standard')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                   formatMode === 'standard'
                     ? 'bg-slate-700 text-white shadow-xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -261,7 +424,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                     : 'Template 2: Akses Google Tools (2G) & Traktir Kopi'}
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Lengkapi data di bawah untuk membuat teks pesan secara otomatis.
+                  Lengkapi data di bawah atau muat dari Direktori Media.
                 </p>
               </div>
             </div>
@@ -271,12 +434,16 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                 data={promediaData}
                 onChange={setPromediaData}
                 onReset={handleResetCurrentForm}
+                onOpenDirectory={() => setIsDirModalOpen(true)}
+                onSaveToDirectory={handleQuickSaveToDirectory}
               />
             ) : (
               <TemplateAccess2G
                 data={access2gData}
                 onChange={setAccess2gData}
                 onReset={handleResetCurrentForm}
+                onOpenDirectory={() => setIsDirModalOpen(true)}
+                onSaveToDirectory={handleQuickSaveToDirectory}
               />
             )}
 
@@ -284,10 +451,10 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
             <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 text-xs text-emerald-900 flex items-start gap-3">
               <Info className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-semibold">Tips Penggunaan:</p>
+                <p className="font-semibold">Tips Penggunaan & Database Tim:</p>
                 <p className="text-emerald-800 leading-relaxed">
-                  Semua perubahan input langsung ter-update di kotak preview sebelah kanan.
-                  Gunakan tombol <strong>Salin Pesan</strong> untuk menyalin teks secara instan atau tombol <strong>Buka di WhatsApp</strong> untuk langsung membuka aplikasi WhatsApp.
+                  Semua perubahan input otomatis tersimpan di draft browser Anda. Gunakan tombol{' '}
+                  <strong>Simpan</strong> di samping nama media untuk membagikan data media ke Direktori Database Tim.
                 </p>
               </div>
             </div>
@@ -298,14 +465,28 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
             <WhatsAppPreview
               messageText={currentMessage}
               onResetForm={handleResetCurrentForm}
+              onActionLogged={handleActionLogged}
             />
           </div>
         </div>
       </main>
 
+      {/* Modals */}
+      <MediaDirectoryModal
+        isOpen={isDirModalOpen}
+        onClose={() => setIsDirModalOpen(false)}
+        onApplyToForm={handleApplyMedia}
+        activeTab={activeTab}
+      />
+
+      <HistoryModal
+        isOpen={isHistModalOpen}
+        onClose={() => setIsHistModalOpen(false)}
+      />
+
       {/* Footer */}
       <footer className="mt-auto py-6 border-t border-slate-200 bg-white/50 text-center text-xs text-slate-400">
-        <p>WhatsApp Message Generator</p>
+        <p>WhatsApp Message Generator • Didukung Cloudflare D1 Database</p>
       </footer>
     </div>
   );

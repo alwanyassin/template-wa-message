@@ -68,8 +68,24 @@ Folder `dist` yang dihasilkan berisi aset statis dan siap di-hosting di berbagai
 
 ---
 
+## 🗄️ Panduan Setup Cloudflare D1 Database (Untuk Kolaborasi Tim)
+
+Aplikasi ini dilengkapi fitur **Direktori Media Bersama** dan **Riwayat Pesan Tim** yang dapat terhubung ke **Cloudflare D1 Database**:
+
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com/) > **Storage & Databases** > **D1**.
+2. Klik **Create database**, beri nama: `wa-template-db`.
+3. Buka database tersebut, klik tab **Console**, lalu salin dan eksekusi query dari file [`d1/schema.sql`](d1/schema.sql).
+4. Di project Cloudflare Pages Anda, buka **Settings** > **Functions** > **D1 database bindings**:
+   - **Variable name**: `DB`
+   - **D1 database**: pilih `wa-template-db`
+5. *(Catatan)*: Jika dijalankan di lingkungan lokal tanpa D1, aplikasi memiliki fitur *smart fallback* ke penyimpanan lokal browser (`localStorage`) secara otomatis.
+
+---
+
 ## 💻 Tech Stack
 - **Framework**: React 18
 - **Bundler**: Vite
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
+- **Database**: Cloudflare D1 (Serverless SQLite)
+- **Backend API**: Cloudflare Pages Functions

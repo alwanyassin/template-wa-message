@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { Globe, BarChart3, PieChart, Mail, Coffee, KeyRound, ExternalLink, Link2 } from 'lucide-react';
+import { Globe, BarChart3, PieChart, Mail, Coffee, KeyRound, ExternalLink, Link2, Building2, BookmarkPlus } from 'lucide-react';
 
-export default function TemplateAccess2G({ data, onChange }) {
+export default function TemplateAccess2G({
+  data,
+  onChange,
+  onOpenDirectory,
+  onSaveToDirectory,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [syncEmail, setSyncEmail] = useState(true);
 
@@ -34,10 +39,36 @@ export default function TemplateAccess2G({ data, onChange }) {
     <div className="space-y-6">
       {/* Media Name */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-200 transition-colors">
-        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
-          <Globe className="w-4 h-4 text-emerald-600" />
-          Nama Media / Website
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <Globe className="w-4 h-4 text-emerald-600" />
+            Nama Media / Website
+          </label>
+          <div className="flex items-center gap-1.5">
+            {onOpenDirectory && (
+              <button
+                type="button"
+                onClick={onOpenDirectory}
+                className="text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                title="Pilih dari Direktori Media D1"
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Pilih Media</span>
+              </button>
+            )}
+            {onSaveToDirectory && (
+              <button
+                type="button"
+                onClick={onSaveToDirectory}
+                className="text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                title="Simpan data saat ini ke Direktori Media D1"
+              >
+                <BookmarkPlus className="w-3.5 h-3.5" />
+                <span>Simpan</span>
+              </button>
+            )}
+          </div>
+        </div>
         <input
           type="text"
           value={data.mediaName}
