@@ -14,6 +14,7 @@ import {
   Building2,
   Clock,
   Check,
+  MessageSquare,
 } from 'lucide-react';
 import {
   getSavedDraft,
@@ -325,7 +326,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
-              <span className="text-xl font-black">💬</span>
+              <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight flex items-center gap-2">
@@ -345,7 +346,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
             <button
               type="button"
               onClick={() => setIsDirModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer active:scale-[0.98] whitespace-nowrap"
               title="Kelola data direktori media bersama"
             >
               <Building2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -355,7 +356,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
             <button
               type="button"
               onClick={() => setIsHistModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer active:scale-[0.98] whitespace-nowrap"
               title="Lihat riwayat pesan yang telah disalin atau dikirim"
             >
               <Clock className="w-3.5 h-3.5 text-amber-600" />
@@ -370,57 +371,59 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
         {/* Tab & Format Controls Bar */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-xs">
           {/* Template Tabs */}
-          <div className="flex items-center p-1 bg-slate-100 rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 w-full md:w-auto p-1 bg-slate-100 rounded-xl gap-1">
             <button
               type="button"
               onClick={() => setActiveTab('promedia')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                 activeTab === 'promedia'
                   ? 'bg-white text-emerald-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Newspaper className="w-4 h-4 text-emerald-600" />
+              <Newspaper className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>1. Akses CMS Promedia</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('access2g')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                 activeTab === 'access2g'
                   ? 'bg-white text-emerald-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <BarChart2 className="w-4 h-4 text-emerald-600" />
+              <BarChart2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>2. Akses 2G & Traktir Kopi</span>
             </button>
           </div>
 
           {/* Mode Format Switcher */}
-          <div className="flex items-center gap-2 px-2 self-end md:self-auto">
-            <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-            <span className="text-xs font-medium text-slate-500">Format:</span>
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 px-2 w-full md:w-auto">
+            <div className="flex items-center gap-1.5">
+              <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+              <span className="text-xs font-semibold text-slate-600">Format:</span>
+            </div>
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl gap-1">
               <button
                 type="button"
                 onClick={() => setFormatMode('professional')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                   formatMode === 'professional'
                     ? 'bg-emerald-700 text-white shadow-xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Format rapi dengan tebal bold, bullet point, dan salam pembuka"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Mode Rapi (WA Markdown)
+                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                Mode Rapi (Markdown)
               </button>
 
               <button
                 type="button"
                 onClick={() => setFormatMode('standard')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                   formatMode === 'standard'
                     ? 'bg-slate-700 text-white shadow-xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -506,8 +509,8 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
       />
 
       {/* Footer */}
-      <footer className="mt-auto py-6 border-t border-slate-200 bg-white/50 text-center text-xs text-slate-400">
-        <p>WhatsApp Message Generator • Didukung Cloudflare D1 Database</p>
+      <footer className="mt-auto py-6 border-t border-slate-200 bg-white/50 text-center text-xs text-slate-600">
+        <p>WhatsApp Message Generator - Didukung Cloudflare D1 Database</p>
       </footer>
     </div>
   );

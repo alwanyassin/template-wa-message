@@ -102,12 +102,12 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
   const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden sticky top-6">
+    <div className="flex flex-col h-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden lg:sticky lg:top-6">
       {/* WA Mock Header */}
       <div className="bg-[#075E54] text-white px-4 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-emerald-700/80 flex items-center justify-center text-emerald-100 font-bold text-sm shadow-inner border border-emerald-400/30">
-            💬
+            <MessageSquare className="w-5 h-5 text-emerald-100" />
           </div>
           <div>
             <div className="font-semibold text-sm flex items-center gap-1.5 leading-snug">
@@ -122,7 +122,7 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
           type="button"
           onClick={onResetForm}
           title="Reset ke format bawaan"
-          className="text-xs text-emerald-100 hover:text-white hover:bg-white/10 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
+          className="text-xs text-emerald-100 hover:text-white hover:bg-white/10 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 active:scale-[0.98] cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Reset Form</span>
@@ -133,19 +133,19 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
       <div className="flex-1 wa-bg-pattern p-4 sm:p-6 overflow-y-auto max-h-[520px] min-h-[360px] flex flex-col justify-start">
         {/* Date chip */}
         <div className="flex justify-center mb-4">
-          <span className="bg-white/90 text-slate-600 text-[11px] px-3 py-1 rounded-lg shadow-sm font-medium">
+          <span className="bg-white/90 text-slate-700 text-[11px] px-3 py-1 rounded-lg shadow-sm font-semibold tracking-wide">
             HARI INI
           </span>
         </div>
 
         {/* Chat Bubble (Right - Sent message) */}
         <div className="self-end max-w-[92%] sm:max-w-[85%] bg-[#E7FCE3] border border-[#d1f5cb] text-slate-900 rounded-2xl rounded-tr-sm p-4 shadow-sm relative group transition-all">
-          <div className="text-[13.5px] font-sans whitespace-pre-wrap select-text">
+          <div className="text-[13.5px] font-sans whitespace-pre-wrap select-text leading-relaxed">
             {formatWhatsAppText(messageText)}
           </div>
 
           {/* Timestamp and ticks */}
-          <div className="flex items-center justify-end gap-1 mt-2 text-[10px] text-slate-500 select-none">
+          <div className="flex items-center justify-end gap-1 mt-2 text-[11px] font-medium text-slate-600 select-none">
             <span>{currentTime}</span>
             <CheckCheck className="w-3.5 h-3.5 text-sky-600 inline" />
           </div>
@@ -154,19 +154,19 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
 
       {/* Footer Info & Action Bar */}
       <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
-        <div className="flex items-center justify-between text-xs text-slate-500 px-1">
-          <span>{wordCount} kata • {charCount} karakter</span>
+        <div className="flex items-center justify-between text-xs text-slate-600 px-1 font-medium">
+          <span>{wordCount} kata - {charCount} karakter</span>
           {copied && (
-            <span className="text-emerald-600 font-semibold flex items-center gap-1 animate-bounce">
-              <Check className="w-3.5 h-3.5" /> Tersalin ke Clipboard!
+            <span className="text-emerald-700 font-semibold flex items-center gap-1">
+              <Check className="w-3.5 h-3.5 text-emerald-600" /> Tersalin ke Clipboard!
             </span>
           )}
         </div>
 
         {/* Direct Phone Input (Optional) */}
         {showPhoneInput ? (
-          <div className="flex items-center gap-2 p-2 bg-white rounded-xl border border-slate-200">
-            <Phone className="w-4 h-4 text-slate-400 ml-1" />
+          <div className="flex items-center gap-2 p-2 bg-white rounded-xl border border-slate-200 shadow-xs">
+            <Phone className="w-4 h-4 text-slate-500 ml-1 shrink-0" />
             <input
               type="tel"
               value={phoneNumber}
@@ -177,7 +177,7 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
             <button
               type="button"
               onClick={() => setShowPhoneInput(false)}
-              className="text-[11px] text-slate-400 hover:text-slate-600 px-1.5"
+              className="text-[11px] font-medium text-slate-600 hover:text-slate-800 px-2 py-1 rounded-md hover:bg-slate-100 transition active:scale-[0.98] cursor-pointer"
             >
               Batal
             </button>
@@ -187,7 +187,7 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
             <button
               type="button"
               onClick={() => setShowPhoneInput(true)}
-              className="text-[11px] text-slate-500 hover:text-emerald-700 underline font-medium"
+              className="text-[11px] text-slate-600 hover:text-emerald-700 font-medium transition cursor-pointer hover:underline"
             >
               + Kirim langsung ke nomor WhatsApp tertentu
             </button>
@@ -199,21 +199,21 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
           <button
             type="button"
             onClick={handleCopy}
-            className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all shadow-sm ${
+            className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all shadow-sm active:scale-[0.98] cursor-pointer whitespace-nowrap ${
               copied
                 ? 'bg-emerald-600 text-white shadow-emerald-200'
-                : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300'
+                : 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 hover:border-slate-300'
             }`}
           >
             {copied ? (
               <>
                 <Check className="w-4 h-4" />
-                Tersalin!
+                <span>Tersalin!</span>
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4 text-slate-600" />
-                Salin Pesan
+                <span>Salin Pesan</span>
               </>
             )}
           </button>
@@ -221,10 +221,10 @@ export default function WhatsAppPreview({ messageText, onResetForm, onActionLogg
           <button
             type="button"
             onClick={handleSendWA}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] cursor-pointer whitespace-nowrap"
           >
             <Send className="w-4 h-4" />
-            Buka di WhatsApp
+            <span>Buka di WhatsApp</span>
           </button>
         </div>
       </div>

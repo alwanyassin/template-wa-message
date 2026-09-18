@@ -176,7 +176,7 @@ export default function HistoryModal({ isOpen, onClose }) {
               type="button"
               onClick={loadHistory}
               disabled={loading}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-[0.98]"
               title="Refresh riwayat"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-slate-800' : ''}`} />
@@ -184,7 +184,7 @@ export default function HistoryModal({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-[0.98]"
               title="Tutup (Esc)"
             >
               <X className="w-5 h-5" />
@@ -196,19 +196,19 @@ export default function HistoryModal({ isOpen, onClose }) {
         <div className="px-6 py-3 border-b border-slate-100 bg-slate-50/50 space-y-2.5">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Cari dalam pesan atau nama media..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9.5 pr-4 py-2 text-xs sm:text-sm bg-white rounded-xl border border-slate-200/90 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 outline-none transition placeholder:text-slate-400"
+              className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-white rounded-xl border border-slate-200/90 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 outline-none transition placeholder:text-slate-500"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-800 active:scale-[0.98] p-0.5"
               >
                 ✕
               </button>
@@ -224,7 +224,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                   key={tab.id}
                   type="button"
                   onClick={() => setFilterType(tab.id)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer active:scale-[0.98] ${
                     isActive
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-100/70 hover:text-slate-900'
@@ -240,13 +240,13 @@ export default function HistoryModal({ isOpen, onClose }) {
         {/* Body List */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5">
           {loading ? (
-            <div className="py-16 text-center text-slate-400 space-y-2">
+            <div className="py-16 text-center text-slate-500 space-y-2">
               <RefreshCw className="w-5 h-5 animate-spin mx-auto text-slate-700" />
-              <p className="text-xs font-medium">Memuat riwayat pesan...</p>
+              <p className="text-xs font-semibold">Memuat riwayat pesan...</p>
             </div>
           ) : filteredList.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 mx-auto mb-3">
                 <MessageSquare className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-semibold text-slate-900">
@@ -254,7 +254,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                   ? 'Tidak ada riwayat yang cocok'
                   : 'Belum ada riwayat pesan'}
               </h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto leading-relaxed">
                 {searchQuery || filterType !== 'all'
                   ? 'Coba sesuaikan filter atau kata kunci pencarian Anda.'
                   : 'Setiap kali Anda menyalin pesan atau membuka WhatsApp dari aplikasi ini, riwayatnya akan otomatis tercatat di sini.'}
@@ -289,7 +289,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                     </div>
 
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="text-slate-400 font-medium">
+                      <span className="text-slate-500 font-medium">
                         {formatDate(item.created_at)}
                       </span>
 
@@ -299,7 +299,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                           <span>Kirim WA {item.phone_number ? `(${item.phone_number})` : ''}</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/70">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/70">
                           <Copy className="w-2.5 h-2.5" />
                           <span>Disalin</span>
                         </span>
@@ -328,7 +328,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                     <button
                       type="button"
                       onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                      className="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition"
+                      className="text-xs text-slate-600 hover:text-slate-900 font-medium flex items-center gap-1 transition active:scale-[0.98] cursor-pointer"
                     >
                       <span>{isExpanded ? 'Perpendek teks' : 'Lihat selengkapnya'}</span>
                       {isExpanded ? (
@@ -342,7 +342,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(item)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition active:scale-[0.98] cursor-pointer ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition active:scale-[0.98] cursor-pointer whitespace-nowrap ${
                           isCopied
                             ? 'bg-emerald-600 text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
@@ -356,7 +356,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                       <button
                         type="button"
                         onClick={() => handleSendWA(item)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 rounded-lg transition active:scale-[0.98] cursor-pointer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 rounded-lg transition active:scale-[0.98] cursor-pointer whitespace-nowrap"
                         title="Buka langsung di WhatsApp"
                       >
                         <Send className="w-3.5 h-3.5 text-emerald-600" />
@@ -366,7 +366,7 @@ export default function HistoryModal({ isOpen, onClose }) {
                       <button
                         type="button"
                         onClick={() => handleDelete(item.id)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition active:scale-[0.98] cursor-pointer"
                         title="Hapus riwayat ini"
                       >
                         <Trash2 className="w-4 h-4" />

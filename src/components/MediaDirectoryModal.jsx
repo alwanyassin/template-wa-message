@@ -231,7 +231,7 @@ export default function MediaDirectoryModal({
               type="button"
               onClick={loadMedia}
               disabled={loading}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-[0.98]"
               title="Refresh database"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-slate-800' : ''}`} />
@@ -239,7 +239,7 @@ export default function MediaDirectoryModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-[0.98]"
               title="Tutup (Esc)"
             >
               <X className="w-5 h-5" />
@@ -250,19 +250,19 @@ export default function MediaDirectoryModal({
         {/* Command & Filter Bar */}
         <div className="px-6 py-3.5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Cari nama portal, email, atau kontak PIC..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9.5 pr-4 py-2 text-xs sm:text-sm bg-white rounded-xl border border-slate-200/90 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 outline-none transition placeholder:text-slate-400"
+              className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-white rounded-xl border border-slate-200/90 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 outline-none transition placeholder:text-slate-500"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-800 active:scale-[0.98] p-0.5"
               >
                 ✕
               </button>
@@ -272,7 +272,7 @@ export default function MediaDirectoryModal({
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-black rounded-xl transition active:scale-[0.98] shadow-xs cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-black rounded-xl transition active:scale-[0.98] shadow-xs cursor-pointer whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Media</span>
@@ -500,19 +500,19 @@ export default function MediaDirectoryModal({
 
           {/* List of Media Cards */}
           {loading ? (
-            <div className="py-16 text-center text-slate-400 space-y-2">
+            <div className="py-16 text-center text-slate-500 space-y-2">
               <RefreshCw className="w-5 h-5 animate-spin mx-auto text-slate-700" />
-              <p className="text-xs font-medium">Menghubungkan ke Cloudflare D1...</p>
+              <p className="text-xs font-semibold">Menghubungkan ke Cloudflare D1...</p>
             </div>
           ) : filteredMedia.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 mx-auto mb-3">
                 <Building2 className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-semibold text-slate-900">
                 {searchQuery ? 'Tidak ada media yang cocok' : 'Direktori masih kosong'}
               </h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto leading-relaxed">
                 {searchQuery
                   ? `Tidak ditemukan media dengan kata kunci "${searchQuery}". Coba periksa ejaan Anda.`
                   : 'Klik tombol "Tambah Media" di atas untuk menyimpan profil media pertama ke database.'}
@@ -563,23 +563,23 @@ export default function MediaDirectoryModal({
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+                        <div className="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
                           {media.google_email && (
                             <span className="flex items-center gap-1">
-                              <Mail className="w-3.5 h-3.5 text-slate-400" />
+                              <Mail className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                               <span>{media.google_email}</span>
                             </span>
                           )}
 
                           {emails.length > 0 && (
-                            <span className="text-slate-500">
-                              • {emails.length} penulis terdaftar
+                            <span className="text-slate-600 font-medium">
+                              - {emails.length} penulis terdaftar
                             </span>
                           )}
 
                           {media.pic_name && (
-                            <span className="flex items-center gap-1 text-slate-600">
-                              <User className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="flex items-center gap-1 text-slate-700 font-medium">
+                              <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                               <span>{media.pic_name}</span>
                               {media.pic_phone && <span>({media.pic_phone})</span>}
                             </span>
@@ -592,7 +592,7 @@ export default function MediaDirectoryModal({
                         <button
                           type="button"
                           onClick={() => handleApply(media)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-black rounded-lg transition active:scale-[0.98] shadow-xs cursor-pointer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-black rounded-lg transition active:scale-[0.98] shadow-xs cursor-pointer whitespace-nowrap"
                           title="Terapkan data media ini ke form generator"
                         >
                           <span>Pakai di Form</span>
@@ -602,7 +602,7 @@ export default function MediaDirectoryModal({
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(media)}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition active:scale-[0.98] cursor-pointer"
                           title="Edit profil media"
                         >
                           <Edit3 className="w-4 h-4" />
@@ -611,7 +611,7 @@ export default function MediaDirectoryModal({
                         <button
                           type="button"
                           onClick={() => handleDelete(media.id, media.media_name)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition active:scale-[0.98] cursor-pointer"
                           title="Hapus media"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -620,7 +620,7 @@ export default function MediaDirectoryModal({
                         <button
                           type="button"
                           onClick={() => setExpandedCardId(isExpanded ? null : media.id)}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition active:scale-[0.98] cursor-pointer"
                           title="Detail informasi"
                         >
                           {isExpanded ? (
@@ -641,7 +641,7 @@ export default function MediaDirectoryModal({
                             Kredensial CMS Promedia
                           </p>
                           <div className="flex items-center justify-between bg-white px-2.5 py-1.5 rounded-lg border border-slate-200/80">
-                            <span className="text-slate-500">Password CMS:</span>
+                            <span className="text-slate-600 font-medium">Password CMS:</span>
                             <div className="flex items-center gap-1.5 font-mono font-medium text-slate-900">
                               <span>{media.cms_password || '-'}</span>
                               {media.cms_password && (
@@ -650,7 +650,7 @@ export default function MediaDirectoryModal({
                                   onClick={() =>
                                     copyToClipboard(media.cms_password, `cms_pass_${media.id}`)
                                   }
-                                  className="text-slate-400 hover:text-slate-700"
+                                  className="text-slate-500 hover:text-slate-800 active:scale-[0.98] p-0.5"
                                   title="Salin password"
                                 >
                                   {copiedField === `cms_pass_${media.id}` ? (
@@ -662,7 +662,7 @@ export default function MediaDirectoryModal({
                               )}
                             </div>
                           </div>
-                          <div className="text-[11px] text-slate-500 truncate">
+                          <div className="text-[11px] text-slate-600 truncate">
                             <span className="font-medium text-slate-700">Link: </span>
                             <span className="font-mono">{media.cms_link || '-'}</span>
                           </div>
@@ -673,7 +673,7 @@ export default function MediaDirectoryModal({
                               </span>
                               {emails.map((e, idx) => (
                                 <div key={idx} className="font-mono truncate">
-                                  • {e}
+                                  - {e}
                                 </div>
                               ))}
                             </div>
@@ -686,7 +686,7 @@ export default function MediaDirectoryModal({
                             Google Tools & Traktir Kopi
                           </p>
                           <div className="flex items-center justify-between bg-white px-2.5 py-1.5 rounded-lg border border-slate-200/80">
-                            <span className="text-slate-500">Password Kopi:</span>
+                            <span className="text-slate-600 font-medium">Password Kopi:</span>
                             <div className="flex items-center gap-1.5 font-mono font-medium text-slate-900">
                               <span>{media.traktir_kopi_password || '-'}</span>
                               {media.traktir_kopi_password && (
@@ -698,7 +698,7 @@ export default function MediaDirectoryModal({
                                       `tk_pass_${media.id}`
                                     )
                                   }
-                                  className="text-slate-400 hover:text-slate-700"
+                                  className="text-slate-500 hover:text-slate-800 active:scale-[0.98] p-0.5"
                                   title="Salin password"
                                 >
                                   {copiedField === `tk_pass_${media.id}` ? (
@@ -710,10 +710,10 @@ export default function MediaDirectoryModal({
                               )}
                             </div>
                           </div>
-                          <div className="text-[11px] text-slate-500 truncate">
+                          <div className="text-[11px] text-slate-600 truncate">
                             <span className="font-medium text-slate-700">GA4: </span>
                             {media.ga4_link ? (
-                              <span className="font-mono text-emerald-700">Tersedia</span>
+                              <span className="font-mono text-emerald-700 font-medium">Tersedia</span>
                             ) : (
                               '-'
                             )}

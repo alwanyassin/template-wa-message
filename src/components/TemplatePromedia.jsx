@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Globe, Lock, Mail, KeyRound, Sparkles, ExternalLink, Building2, BookmarkPlus, Dices } from 'lucide-react';
+import { Plus, Trash2, Globe, Lock, Mail, KeyRound, Sparkles, ExternalLink, Building2, BookmarkPlus, Dices, ChevronDown } from 'lucide-react';
 import { generateRandomPassword } from '../utils/password';
 
 export default function TemplatePromedia({
@@ -62,7 +62,7 @@ export default function TemplatePromedia({
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-200 transition-colors">
         <div className="flex items-center justify-between mb-2">
           <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Globe className="w-4 h-4 text-emerald-600" />
+            <Globe className="w-4 h-4 text-emerald-600 shrink-0" />
             Nama Media / Portal Berita
           </label>
           <div className="flex items-center gap-1.5">
@@ -70,7 +70,7 @@ export default function TemplatePromedia({
               <button
                 type="button"
                 onClick={onOpenDirectory}
-                className="text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                className="text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer active:scale-[0.98] whitespace-nowrap"
                 title="Pilih dari Direktori Media D1"
               >
                 <Building2 className="w-3.5 h-3.5" />
@@ -81,7 +81,7 @@ export default function TemplatePromedia({
               <button
                 type="button"
                 onClick={onSaveToDirectory}
-                className="text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                className="text-xs font-semibold text-slate-700 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer active:scale-[0.98] whitespace-nowrap"
                 title="Simpan data saat ini ke Direktori Media D1"
               >
                 <BookmarkPlus className="w-3.5 h-3.5" />
@@ -106,18 +106,19 @@ export default function TemplatePromedia({
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-200 transition-colors">
         <div className="flex items-center justify-between mb-3">
           <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Mail className="w-4 h-4 text-emerald-600" />
+            <Mail className="w-4 h-4 text-emerald-600 shrink-0" />
             Username / Daftar Email Penulis ({data.emails.length})
           </label>
-          <span className="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full font-medium">
-            💡 Bisa paste multi-line
+          <span className="inline-flex items-center gap-1 text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full font-semibold border border-emerald-100">
+            <Sparkles className="w-3 h-3 text-emerald-600" />
+            Bisa paste multi-line
           </span>
         </div>
 
         <div className="space-y-2.5">
           {data.emails.map((email, index) => (
             <div key={index} className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-600 w-5 text-center">
+              <span className="text-xs font-semibold text-slate-600 w-5 text-center shrink-0">
                 {index + 1}.
               </span>
               <input
@@ -131,7 +132,7 @@ export default function TemplatePromedia({
                 <button
                   type="button"
                   onClick={() => handleRemoveEmail(index)}
-                  className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition"
+                  className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition active:scale-[0.98] cursor-pointer shrink-0"
                   title="Hapus email ini"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -145,10 +146,10 @@ export default function TemplatePromedia({
           <button
             type="button"
             onClick={handleAddEmail}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 rounded-xl transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 rounded-xl transition cursor-pointer active:scale-[0.98] whitespace-nowrap"
           >
             <Plus className="w-3.5 h-3.5" />
-            Tambah Email Lagi
+            <span>Tambah Email Lagi</span>
           </button>
         </div>
       </div>
@@ -157,7 +158,7 @@ export default function TemplatePromedia({
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-200 transition-colors">
         <label className="flex items-center justify-between text-sm font-semibold text-slate-700 mb-2">
           <span className="flex items-center gap-2">
-            <KeyRound className="w-4 h-4 text-emerald-600" />
+            <KeyRound className="w-4 h-4 text-emerald-600 shrink-0" />
             Password CMS Editor
           </span>
           <div className="flex items-center gap-2">
@@ -168,7 +169,7 @@ export default function TemplatePromedia({
                 onChange({ ...data, password: newPass });
                 setShowPassword(true);
               }}
-              className="text-xs text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-lg font-medium transition flex items-center gap-1 cursor-pointer"
+              className="text-xs text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg font-semibold transition flex items-center gap-1 cursor-pointer active:scale-[0.98] whitespace-nowrap"
               title="Generate password acak baru"
             >
               <Dices className="w-3.5 h-3.5 text-emerald-600" />
@@ -177,7 +178,7 @@ export default function TemplatePromedia({
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-xs text-slate-500 hover:text-slate-700 font-normal cursor-pointer"
+              className="text-xs text-slate-600 hover:text-slate-800 font-medium cursor-pointer active:scale-[0.98] px-1"
             >
               {showPassword ? 'Sembunyikan' : 'Tampilkan'}
             </button>
@@ -195,7 +196,7 @@ export default function TemplatePromedia({
       {/* Link CMS Options */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-200 transition-colors">
         <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
-          <ExternalLink className="w-4 h-4 text-emerald-600" />
+          <ExternalLink className="w-4 h-4 text-emerald-600 shrink-0" />
           Pilihan Link CMS Editor
         </label>
 
@@ -207,17 +208,17 @@ export default function TemplatePromedia({
                 key={opt.value}
                 type="button"
                 onClick={() => handleSelectCms(opt.value)}
-                className={`p-3 text-left rounded-xl border transition-all text-xs flex flex-col justify-between ${
+                className={`p-3 text-left rounded-xl border transition-all text-xs flex flex-col justify-between active:scale-[0.98] cursor-pointer ${
                   isSelected
                     ? 'border-emerald-500 bg-emerald-50/70 text-emerald-900 shadow-sm ring-1 ring-emerald-400'
-                    : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 text-slate-600'
+                    : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 text-slate-700'
                 }`}
               >
                 <div className="font-bold flex items-center justify-between">
                   <span>{opt.label}</span>
                   {isSelected && <span className="w-2 h-2 rounded-full bg-emerald-600"></span>}
                 </div>
-                <span className="font-mono text-[10px] text-slate-500 truncate mt-1">
+                <span className="font-mono text-[10px] text-slate-600 truncate mt-1">
                   {opt.value.replace('https://', '')}
                 </span>
               </button>
@@ -230,9 +231,10 @@ export default function TemplatePromedia({
           <button
             type="button"
             onClick={() => setCustomLinkActive(!customLinkActive)}
-            className="text-xs text-slate-500 hover:text-emerald-600 flex items-center gap-1 font-medium mb-2"
+            className="text-xs text-slate-600 hover:text-emerald-700 flex items-center gap-1.5 font-medium mb-2 active:scale-[0.98] cursor-pointer"
           >
-            <span>{customLinkActive ? '▼ Sembunyikan custom link' : '▶ Gunakan link CMS khusus/custom'}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${customLinkActive ? 'rotate-180 text-emerald-600' : 'text-slate-500'}`} />
+            <span>{customLinkActive ? 'Sembunyikan custom link' : 'Gunakan link CMS khusus/custom'}</span>
           </button>
 
           {customLinkActive && (
