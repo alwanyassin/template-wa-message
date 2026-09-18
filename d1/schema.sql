@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS media_directory (
   id TEXT PRIMARY KEY,
   media_name TEXT NOT NULL,
-  cms_emails TEXT,             -- JSON string array: ["email1@...", "email2@..."]
+  cms_emails TEXT,
   cms_password TEXT,
   cms_link TEXT,
   ga4_link TEXT,
@@ -27,10 +27,10 @@ CREATE INDEX IF NOT EXISTS idx_media_name ON media_directory(media_name);
 -- 2. Tabel Riwayat Pesan (History Logs)
 CREATE TABLE IF NOT EXISTS history_logs (
   id TEXT PRIMARY KEY,
-  template_type TEXT NOT NULL, -- 'promedia' | 'access2g'
+  template_type TEXT NOT NULL,
   media_name TEXT NOT NULL,
   message_text TEXT NOT NULL,
-  action TEXT NOT NULL,        -- 'copy' | 'send_wa'
+  action TEXT NOT NULL,
   phone_number TEXT,
   created_at INTEGER NOT NULL
 );
