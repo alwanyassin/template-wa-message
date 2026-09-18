@@ -8,7 +8,7 @@ Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
 
 ## ✨ Fitur Utama
 
-1. **2 Template Siap Pakai**:
+1. **Dua Template Siap Pakai**:
    - **Template 1 (Akses CMS Editor Promedia)**:
      - Nama Media dinamis.
      - Multi-email / username penulis (bisa tambah baris atau *paste* banyak email sekaligus).
@@ -22,7 +22,7 @@ Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
      - Password Dashboard Traktir Kopi.
      - Link Dashboard Traktir Kopi (default: `https://traktir-kopi.promediateknologi.id/` dan bisa diedit).
 
-2. **2 Pilihan Mode Format**:
+2. **Dua Pilihan Mode Format**:
    - **Mode Rapi (WhatsApp Markdown)**: Menggunakan fitur native WhatsApp (teks tebal `*bold*`, password dalam format kode `` `monospace` ``, bullet point rapi, dan kata pengantar profesional).
    - **Format Asli (Standar)**: Persis 100% seperti draft asli sebelumnya.
 
