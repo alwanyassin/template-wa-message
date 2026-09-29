@@ -8,7 +8,7 @@ Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
 
 ## ✨ Fitur Utama
 
-1. **Dua Template Siap Pakai**:
+1. **Tiga Template Siap Pakai**:
    - **Template 1 (Akses CMS Editor Promedia)**:
      - Nama Media dinamis.
      - Multi-email / username penulis (bisa tambah baris atau *paste* banyak email sekaligus).
@@ -21,6 +21,12 @@ Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
      - Akses Email (otomatis sinkron ke username Traktir Kopi).
      - Password Dashboard Traktir Kopi.
      - Link Dashboard Traktir Kopi (default: `https://traktir-kopi.promediateknologi.id/` dan bisa diedit).
+   - **Template 3 (Report Pembuatan Akun Sosmed Wilayah - Bisnis Model Baru / ProTV)**:
+     - Header laporan dinamis (Judul, Tanggal, Nama Brand, Kalimat Pengantar).
+     - Manajemen akun sosmed per wilayah (Email, YouTube, TikTok, Facebook, Instagram, dan Catatan Khusus).
+     - Fitur **Auto-Format Format ProTV** untuk mengisi otomatis akun berdasarkan nama kota/wilayah.
+     - Fitur **Auto Status Generator** (otomatis mendeteksi status ✅ Lengkap 4 platform atau ⚠️ Pending/Belum dibuat) dengan opsi kustomisasi per kota.
+     - Tambah, hapus, duplikat, dan urutkan wilayah dengan mudah.
 
 2. **Dua Pilihan Mode Format**:
    - **Mode Rapi (WhatsApp Markdown)**: Menggunakan fitur native WhatsApp (teks tebal `*bold*`, password dalam format kode `` `monospace` ``, bullet point rapi, dan kata pengantar profesional).

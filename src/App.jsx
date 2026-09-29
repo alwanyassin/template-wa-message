@@ -1,6 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import TemplatePromedia from './components/TemplatePromedia';
 import TemplateAccess2G from './components/TemplateAccess2G';
+import TemplateSosmed, {
+  initialSosmedData,
+  computeRegionStatus,
+} from './components/TemplateSosmed';
 import WhatsAppPreview from './components/WhatsAppPreview';
 import MediaDirectoryModal from './components/MediaDirectoryModal';
 import HistoryModal from './components/HistoryModal';
@@ -15,6 +19,7 @@ import {
   Clock,
   Check,
   MessageSquare,
+  Share2,
 } from 'lucide-react';
 import {
   getSavedDraft,
@@ -61,6 +66,9 @@ export default function App() {
   const [access2gData, setAccess2gData] = useState(() =>
     getSavedDraft('access2g', initialAccess2GData)
   );
+  const [sosmedData, setSosmedData] = useState(() =>
+    getSavedDraft('sosmed', initialSosmedData)
+  );
 
   // Modal states
   const [isDirModalOpen, setIsDirModalOpen] = useState(false);
@@ -76,6 +84,10 @@ export default function App() {
   useEffect(() => {
     saveDraft('access2g', access2gData);
   }, [access2gData]);
+
+  useEffect(() => {
+    saveDraft('sosmed', sosmedData);
+  }, [sosmedData]);
 
   useEffect(() => {
     saveDraft('active_tab', activeTab);
@@ -196,22 +208,107 @@ ${tkLink}
 _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terima kasih._`;
   };
 
+  // Generate Message for Template 3 (Report Pembuatan Akun Sosmed)
+  const generateSosmedMessage = (data, mode) => {
+    const title = (data.reportTitle || 'REPORT PEMBUATAN AKUN SOSMED').trim();
+    const date = (data.reportDate || '').trim();
+    const brand = (data.brandName || 'ProTV').trim();
+    const intro = (
+      data.customIntro ||
+      `Berikut update pembuatan akun ${brand} untuk beberapa wilayah:`
+    ).trim();
+
+    const regionBlocks = (data.regions || []).map((reg, idx) => {
+      const num = idx + 1;
+      const name = (reg.name || `WILAYAH ${num}`).trim();
+      const email = (reg.email || '-').trim();
+      const yt = (reg.youtube || '-').trim();
+      const tt = (reg.tiktok || '-').trim();
+      const fb = (reg.facebook || '-').trim();
+      const ig = (reg.instagram || '-').trim();
+      const note = (reg.note || '').trim();
+
+      if (mode === 'standard') {
+        let block = `${num}. ${name}
+📧 Email: ${email}
+▶️ YouTube: ${yt}
+🎵 TikTok: ${tt}
+📘 Facebook: ${fb}
+📷 Instagram: ${ig}`;
+        if (note) {
+          block += `\n${note}`;
+        }
+        return block;
+      }
+
+      // Professional Mode (WhatsApp Markdown)
+      let block = `*${num}. ${name}*
+📧 *Email:* ${email}
+▶️ *YouTube:* ${yt}
+🎵 *TikTok:* ${tt}
+📘 *Facebook:* ${fb}
+📷 *Instagram:* ${ig}`;
+      if (note) {
+        block += `\n_${note}_`;
+      }
+      return block;
+    });
+
+    const statusLines = (data.regions || []).map((reg) => {
+      if (reg.statusText && reg.statusText.trim()) {
+        return reg.statusText.trim();
+      }
+      return computeRegionStatus(reg);
+    });
+
+    const statusBlock = statusLines.join('\n');
+
+    if (mode === 'standard') {
+      const regionsText = regionBlocks.join('\n');
+      return `${title}
+${date}
+${intro}
+${regionsText}
+Status:
+${statusBlock}`;
+    }
+
+    // Professional Mode (WhatsApp Markdown)
+    const regionsText = regionBlocks.join('\n\n');
+    return `*${title}*
+📅 _${date}_
+
+${intro}
+
+${regionsText}
+
+────────────────────────
+*Status:*
+${statusBlock}`;
+  };
+
   // Compute Active Message
   const currentMessage = useMemo(() => {
     if (activeTab === 'promedia') {
       return generatePromediaMessage(promediaData, formatMode);
     }
-    return generateAccess2GMessage(access2gData, formatMode);
-  }, [activeTab, formatMode, promediaData, access2gData]);
+    if (activeTab === 'access2g') {
+      return generateAccess2GMessage(access2gData, formatMode);
+    }
+    return generateSosmedMessage(sosmedData, formatMode);
+  }, [activeTab, formatMode, promediaData, access2gData, sosmedData]);
 
   // Reset current form to initial state
   const handleResetCurrentForm = () => {
     if (activeTab === 'promedia') {
       setPromediaData(initialPromediaData);
       removeDraft('promedia');
-    } else {
+    } else if (activeTab === 'access2g') {
       setAccess2gData(initialAccess2GData);
       removeDraft('access2g');
+    } else {
+      setSosmedData(initialSosmedData);
+      removeDraft('sosmed');
     }
     setCurrentMediaId(null);
     showToast('Form berhasil di-reset ke data default');
@@ -299,8 +396,14 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
 
   // Callback when message is copied or opened in WhatsApp
   const handleActionLogged = async (actionType, phoneNumber) => {
-    const mediaName =
-      activeTab === 'promedia' ? promediaData.mediaName : access2gData.mediaName;
+    let mediaName = 'Media';
+    if (activeTab === 'promedia') {
+      mediaName = promediaData.mediaName;
+    } else if (activeTab === 'access2g') {
+      mediaName = access2gData.mediaName;
+    } else {
+      mediaName = `${sosmedData.brandName || 'ProTV'} (${sosmedData.regions?.length || 0} Wilayah)`;
+    }
 
     await logHistoryEntry({
       template_type: activeTab,
@@ -336,7 +439,7 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                 </span>
               </h1>
               <p className="text-xs text-slate-500">
-                Generator Pesan Akses CMS & Google Tools
+                Generator Pesan Akses CMS, Google Tools & Report Sosmed
               </p>
             </div>
           </div>
@@ -371,31 +474,44 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
         {/* Tab & Format Controls Bar */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-xs">
           {/* Template Tabs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 w-full md:w-auto p-1 bg-slate-100 rounded-xl gap-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 w-full md:w-auto p-1 bg-slate-100 rounded-xl gap-1">
             <button
               type="button"
               onClick={() => setActiveTab('promedia')}
-              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                 activeTab === 'promedia'
                   ? 'bg-white text-emerald-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Newspaper className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>1. Akses CMS Promedia</span>
+              <span>1. CMS Promedia</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('access2g')}
-              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
                 activeTab === 'access2g'
                   ? 'bg-white text-emerald-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <BarChart2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>2. Akses 2G & Traktir Kopi</span>
+              <span>2. Google Tools 2G</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('sosmed')}
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
+                activeTab === 'sosmed'
+                  ? 'bg-white text-purple-800 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Share2 className="w-4 h-4 text-purple-600 shrink-0" />
+              <span>3. Akun Sosmed Wilayah</span>
             </button>
           </div>
 
@@ -445,15 +561,19 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                 <h2 className="text-lg font-bold text-slate-900">
                   {activeTab === 'promedia'
                     ? 'Template 1: Akses CMS Editor Promedia'
-                    : 'Template 2: Akses Google Tools (2G) & Traktir Kopi'}
+                    : activeTab === 'access2g'
+                    ? 'Template 2: Akses Google Tools (2G) & Traktir Kopi'
+                    : 'Template 3: Report Pembuatan Akun Sosmed (ProTV)'}
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Lengkapi data di bawah atau muat dari Direktori Media.
+                  {activeTab === 'sosmed'
+                    ? 'Kelola update akun media sosial per wilayah untuk laporan tim IT.'
+                    : 'Lengkapi data di bawah atau muat dari Direktori Media.'}
                 </p>
               </div>
             </div>
 
-            {activeTab === 'promedia' ? (
+            {activeTab === 'promedia' && (
               <TemplatePromedia
                 data={promediaData}
                 onChange={setPromediaData}
@@ -461,13 +581,21 @@ _Catatan: Harap pastikan login Google menggunakan email terdaftar di atas. Terim
                 onOpenDirectory={() => setIsDirModalOpen(true)}
                 onSaveToDirectory={handleQuickSaveToDirectory}
               />
-            ) : (
+            )}
+            {activeTab === 'access2g' && (
               <TemplateAccess2G
                 data={access2gData}
                 onChange={setAccess2gData}
                 onReset={handleResetCurrentForm}
                 onOpenDirectory={() => setIsDirModalOpen(true)}
                 onSaveToDirectory={handleQuickSaveToDirectory}
+              />
+            )}
+            {activeTab === 'sosmed' && (
+              <TemplateSosmed
+                data={sosmedData}
+                onChange={setSosmedData}
+                onReset={handleResetCurrentForm}
               />
             )}
 

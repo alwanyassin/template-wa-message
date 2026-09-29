@@ -123,6 +123,7 @@ export default function HistoryModal({ isOpen, onClose }) {
 
     if (filterType === 'promedia') return item.template_type === 'promedia';
     if (filterType === 'access2g') return item.template_type === 'access2g';
+    if (filterType === 'sosmed') return item.template_type === 'sosmed';
     if (filterType === 'send_wa') return item.action === 'send_wa';
     if (filterType === 'copy') return item.action === 'copy';
 
@@ -133,6 +134,7 @@ export default function HistoryModal({ isOpen, onClose }) {
     { id: 'all', label: 'Semua' },
     { id: 'promedia', label: 'CMS Promedia' },
     { id: 'access2g', label: 'Google Tools 2G' },
+    { id: 'sosmed', label: 'Report Sosmed' },
     { id: 'send_wa', label: 'Kirim WA' },
     { id: 'copy', label: 'Disalin' },
   ];
@@ -264,6 +266,7 @@ export default function HistoryModal({ isOpen, onClose }) {
             filteredList.map((item) => {
               const isCopied = copiedId === item.id;
               const isPromedia = item.template_type === 'promedia';
+              const isAccess2G = item.template_type === 'access2g';
               const isExpanded = expandedId === item.id;
 
               return (
@@ -281,10 +284,16 @@ export default function HistoryModal({ isOpen, onClose }) {
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
                           isPromedia
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                            : 'bg-blue-50 text-blue-700 border border-blue-100'
+                            : isAccess2G
+                            ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                            : 'bg-purple-50 text-purple-700 border border-purple-100'
                         }`}
                       >
-                        {isPromedia ? 'CMS Promedia' : 'Google Tools 2G'}
+                        {isPromedia
+                          ? 'CMS Promedia'
+                          : isAccess2G
+                          ? 'Google Tools 2G'
+                          : 'Report Sosmed'}
                       </span>
                     </div>
 
