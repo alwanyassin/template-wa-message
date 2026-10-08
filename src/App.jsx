@@ -5,6 +5,10 @@ import TemplateSosmed, {
   initialSosmedData,
   computeRegionStatus,
 } from './components/TemplateSosmed';
+import TemplateCreatorFactory, {
+  initialCreatorFactoryData,
+  generateCreatorFactoryMessage,
+} from './components/TemplateCreatorFactory';
 import WhatsAppPreview from './components/WhatsAppPreview';
 import MediaDirectoryModal from './components/MediaDirectoryModal';
 import HistoryModal from './components/HistoryModal';
@@ -20,6 +24,7 @@ import {
   Check,
   MessageSquare,
   Share2,
+  Clapperboard,
 } from 'lucide-react';
 import {
   getSavedDraft,
@@ -69,6 +74,9 @@ export default function App() {
   const [sosmedData, setSosmedData] = useState(() =>
     getSavedDraft('sosmed', initialSosmedData)
   );
+  const [creatorFactoryData, setCreatorFactoryData] = useState(() =>
+    getSavedDraft('creator_factory', initialCreatorFactoryData)
+  );
 
   // Modal states
   const [isDirModalOpen, setIsDirModalOpen] = useState(false);
@@ -88,6 +96,10 @@ export default function App() {
   useEffect(() => {
     saveDraft('sosmed', sosmedData);
   }, [sosmedData]);
+
+  useEffect(() => {
+    saveDraft('creator_factory', creatorFactoryData);
+  }, [creatorFactoryData]);
 
   useEffect(() => {
     saveDraft('active_tab', activeTab);
@@ -295,8 +307,18 @@ ${statusBlock}`;
     if (activeTab === 'access2g') {
       return generateAccess2GMessage(access2gData, formatMode);
     }
-    return generateSosmedMessage(sosmedData, formatMode);
-  }, [activeTab, formatMode, promediaData, access2gData, sosmedData]);
+    if (activeTab === 'sosmed') {
+      return generateSosmedMessage(sosmedData, formatMode);
+    }
+    return generateCreatorFactoryMessage(creatorFactoryData, formatMode);
+  }, [
+    activeTab,
+    formatMode,
+    promediaData,
+    access2gData,
+    sosmedData,
+    creatorFactoryData,
+  ]);
 
   // Reset current form to initial state
   const handleResetCurrentForm = () => {
@@ -306,9 +328,12 @@ ${statusBlock}`;
     } else if (activeTab === 'access2g') {
       setAccess2gData(initialAccess2GData);
       removeDraft('access2g');
-    } else {
+    } else if (activeTab === 'sosmed') {
       setSosmedData(initialSosmedData);
       removeDraft('sosmed');
+    } else {
+      setCreatorFactoryData(initialCreatorFactoryData);
+      removeDraft('creator_factory');
     }
     setCurrentMediaId(null);
     showToast('Form berhasil di-reset ke data default');
@@ -394,6 +419,12 @@ ${statusBlock}`;
     );
   };
 
+  // Simpan manual untuk Creator Factory Network
+  const handleSaveCreatorFactory = () => {
+    saveDraft('creator_factory', creatorFactoryData);
+    showToast('Laporan Creator Factory Network berhasil disimpan!');
+  };
+
   // Callback when message is copied or opened in WhatsApp
   const handleActionLogged = async (actionType, phoneNumber) => {
     let mediaName = 'Media';
@@ -401,8 +432,10 @@ ${statusBlock}`;
       mediaName = promediaData.mediaName;
     } else if (activeTab === 'access2g') {
       mediaName = access2gData.mediaName;
-    } else {
+    } else if (activeTab === 'sosmed') {
       mediaName = `${sosmedData.brandName || 'ProTV'} (${sosmedData.regions?.length || 0} Wilayah)`;
+    } else if (activeTab === 'creator_factory') {
+      mediaName = `Creator Factory Network (${creatorFactoryData.totalOfficial || 0} Akun)`;
     }
 
     await logHistoryEntry({
@@ -474,7 +507,7 @@ ${statusBlock}`;
         {/* Tab & Format Controls Bar */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-xs">
           {/* Template Tabs */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 w-full md:w-auto p-1 bg-slate-100 rounded-xl gap-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 w-full md:w-auto p-1 bg-slate-100 rounded-xl gap-1">
             <button
               type="button"
               onClick={() => setActiveTab('promedia')}
@@ -511,7 +544,20 @@ ${statusBlock}`;
               }`}
             >
               <Share2 className="w-4 h-4 text-purple-600 shrink-0" />
-              <span>3. Akun Sosmed Wilayah</span>
+              <span>3. Sosmed Wilayah</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('creator_factory')}
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
+                activeTab === 'creator_factory'
+                  ? 'bg-white text-indigo-800 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Clapperboard className="w-4 h-4 text-indigo-600 shrink-0" />
+              <span>4. Creator Factory</span>
             </button>
           </div>
 
@@ -563,10 +609,14 @@ ${statusBlock}`;
                     ? 'Template 1: Akses CMS Editor Promedia'
                     : activeTab === 'access2g'
                     ? 'Template 2: Akses Google Tools (2G) & Traktir Kopi'
-                    : 'Template 3: Report Pembuatan Akun Sosmed (ProTV)'}
+                    : activeTab === 'sosmed'
+                    ? 'Template 3: Report Pembuatan Akun Sosmed (ProTV)'
+                    : 'Template 4: Report Promedia Creator Factory Network'}
                 </h2>
                 <p className="text-xs text-slate-500">
-                  {activeTab === 'sosmed'
+                  {activeTab === 'creator_factory'
+                    ? 'Laporan progres akun official & segmen live TikTok Creator Factory Network.'
+                    : activeTab === 'sosmed'
                     ? 'Kelola update akun media sosial per wilayah untuk laporan tim IT.'
                     : 'Lengkapi data di bawah atau muat dari Direktori Media.'}
                 </p>
@@ -596,6 +646,14 @@ ${statusBlock}`;
                 data={sosmedData}
                 onChange={setSosmedData}
                 onReset={handleResetCurrentForm}
+              />
+            )}
+            {activeTab === 'creator_factory' && (
+              <TemplateCreatorFactory
+                data={creatorFactoryData}
+                onChange={setCreatorFactoryData}
+                onReset={handleResetCurrentForm}
+                onSave={handleSaveCreatorFactory}
               />
             )}
 

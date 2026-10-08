@@ -27,6 +27,12 @@ Aplikasi ini 100% *client-side*, sangat cepat, dan responsif.
      - Fitur **Auto-Format Format ProTV** untuk mengisi otomatis akun berdasarkan nama kota/wilayah.
      - Fitur **Auto Status Generator** (otomatis mendeteksi status ✅ Lengkap 4 platform atau ⚠️ Pending/Belum dibuat) dengan opsi kustomisasi per kota.
      - Tambah, hapus, duplikat, dan urutkan wilayah dengan mudah.
+   - **Template 4 (Report Promedia Creator Factory Network)**:
+     - Header laporan dinamis (Judul, Tanggal otomatis/custom, Salam, dan Pengantar).
+     - Ringkasan **Akun Official** (Total akun, jumlah akun aman & terverifikasi, jumlah akun alternatif/kendala, serta tombol Auto-Hitung Total).
+     - Ringkasan **Akun Segmen Live TikTok** (Total akun live, status & batasan fitur TikTok Affiliate, status & syarat follower Live Streaming).
+     - **Next Action Plan** interaktif (tambah/hapus baris target langkah tindak lanjut secara dinamis).
+     - Kalimat penutup yang dapat disesuaikan.
 
 2. **Dua Pilihan Mode Format**:
    - **Mode Rapi (WhatsApp Markdown)**: Menggunakan fitur native WhatsApp (teks tebal `*bold*`, password dalam format kode `` `monospace` ``, bullet point rapi, dan kata pengantar profesional).
